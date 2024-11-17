@@ -8,6 +8,8 @@ let showingAnimal = false;
 let animalStartTime;
 let currentAnimalImage;
 let backgroundWidth, backgroundHeight;
+let bgMusic; // Variable for background music
+let gameStarted = false; // Flag to track if the game has started
 
 function preload() {
   // Load and resize the car image
@@ -23,6 +25,9 @@ function preload() {
     let img = loadImage(`images/animales/animal-${number}.png`);
     animalImages.push(img);
   }
+
+  // Load the background music
+  bgMusic = loadSound('music/forest.mp4');
 }
 
 function setup() {
@@ -34,7 +39,14 @@ function setup() {
 }
 
 function draw() {
-  if (showingAnimal) {
+  if (!gameStarted) {
+    // Display the start screen
+    background(0); // Black background
+    fill(255); // White text
+    textAlign(CENTER, CENTER);
+    textSize(32);
+    text('Click to Start the Game', width / 2, height / 2);
+  } else if (showingAnimal) {
     // Display the animal image fullscreen
     image(currentAnimalImage, 0, 0, width, height);
 
@@ -63,13 +75,13 @@ function draw() {
 
     // Constrain carX and carY
     carX = constrain(carX, -(backgroundWidth - width/2), (backgroundWidth - width)/2);
-    carY = constrain(carY, -(backgroundHeight - height)/2, (backgroundHeight - height)/2);
+    carY = constrain(carY, -(backgroundHeight - height/2), (backgroundHeight - height)/2);
 
     // Draw the background moving opposite to the car's movement
     push();
     imageMode(CENTER);
     translate(-carX, -carY);
-    image(backgroundImage,0, 0, backgroundWidth, backgroundHeight);
+    image(backgroundImage, 0, 0, backgroundWidth, backgroundHeight);
     pop();
 
     // Draw the car centered on the screen
@@ -79,6 +91,17 @@ function draw() {
     imageMode(CENTER);
     image(carImage, 0, 0);
     pop();
+  }
+}
+
+function mousePressed() {
+  if (!gameStarted) {
+    gameStarted = true;
+
+    // Start the background music
+    if (!bgMusic.isPlaying()) {
+      bgMusic.loop();
+    }
   }
 }
 
